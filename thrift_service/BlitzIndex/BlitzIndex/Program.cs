@@ -33,7 +33,8 @@ namespace BlitzIndex
         public QueryResponse query(Query query)
         {
             QueryResponse response = new QueryResponse();
-            QueryTreeNode treeNode = query.QueryTreeNodes[query.RootId];
+            Dictionary<int, QueryTreeNode> treeNodes = query.QueryTreeNodes.ToDictionary(n => n.Id);
+            QueryTreeNode treeNode = treeNodes[query.RootId];
             foreach (IDocument document in m_db.Query(treeNode.Value))
             {
                 QueryResult result = new QueryResult();
