@@ -99,6 +99,8 @@ namespace BlitzIndex
                     }
 				}
             }
+
+            response.Results.Sort((a, b) => string.Compare(a.Id, b.Id));
             return response;
         }
 
