@@ -11,7 +11,7 @@ namespace com.coveo.blitz.thrift
 		string Id { get; }
 		string Text { get; }
 		DocumentType Type { get; }
-		IEnumerable<string> Keywords { get; }
+		IEnumerable<KeyValuePair<int, string>> Keywords { get; }
 		string[] FacetNames { get; }
 
 		void Sanitize();

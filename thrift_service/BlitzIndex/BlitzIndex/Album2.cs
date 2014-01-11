@@ -16,12 +16,9 @@ namespace com.coveo.blitz.thrift
 			get { return DocumentType.ALBUM; }
 		}
 
-		public IEnumerable<string> Keywords
+		public IEnumerable<KeyValuePair<int, string>> Keywords
 		{
-			get
-			{
-				return TextTokenizer.Tokenize(Text);
-			}
+			get { return TextTokenizer.Tokenize(Text); }
 		}
 
 		public string[] FacetNames

@@ -30,19 +30,19 @@ namespace BlitzIndex
                 m_entries.Add(entry.Id, new SearchResult(entry, emptyIntList));
             }
 
-            Dictionary<string, List<int>> keywordCount = new Dictionary<string, List<int>>();
-            foreach (string keyword in entry.Keywords)
+            Dictionary<string, List<int>> keywordOccurences = new Dictionary<string, List<int>>();
+            foreach (var keyword in entry.Keywords)
             {
                 List<int> positions;
-                if (!keywordCount.TryGetValue(keyword, out positions))
+                if (!keywordOccurences.TryGetValue(keyword.Value, out positions))
                 {
                     positions = new List<int>();
-                    keywordCount.Add(keyword, positions);
+                    keywordOccurences.Add(keyword.Value, positions);
                 }
-                positions.Add(0); // TODO add token location
+                positions.Add(keyword.Key);
             }
 
-            foreach (var pair in keywordCount)
+            foreach (var pair in keywordOccurences)
             {
 				HashSet<SearchResult> keywordSet = m_key_entries.GetOrAdd(pair.Key, searchResultFactory);
                 lock (keywordSet)
@@ -54,7 +54,7 @@ namespace BlitzIndex
 		
 		public HashSet<SearchResult> Query(string keyword)
 		{
-			keyword = keyword.Trim();
+			keyword = keyword.ToUpperInvariant().Trim();
 
 			if(keyword == "*")
                 return new HashSet<SearchResult>(m_entries.Values);

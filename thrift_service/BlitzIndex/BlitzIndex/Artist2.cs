@@ -15,7 +15,7 @@ namespace com.coveo.blitz.thrift
 			get { return DocumentType.ARTIST; }
 		}
 
-		public IEnumerable<string> Keywords
+		public IEnumerable<KeyValuePair<int, string>> Keywords
 		{
 			get { return TextTokenizer.Tokenize(Text); }
 		}

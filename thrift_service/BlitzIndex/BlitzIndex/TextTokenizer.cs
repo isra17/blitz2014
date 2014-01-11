@@ -12,13 +12,14 @@ namespace com.coveo.blitz.thrift
 		private static readonly Regex tokenizeRegex = new Regex(
 			@"[\p{L}-_\d]+", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-		public static IEnumerable<string> Tokenize(string text)
+		public static IEnumerable<KeyValuePair<int, string>> Tokenize(string text)
 		{
 			if (text == null) yield break;
 
 			Match match = tokenizeRegex.Match(text);
 			while (match.Success)
 			{
+				// Check that it's not just dashes or underscores
 				bool valid = false;
 				foreach (var c in match.Value)
 				{
@@ -29,7 +30,7 @@ namespace com.coveo.blitz.thrift
 					}
 				}
 
-				if (valid) yield return match.Value.ToLowerInvariant();
+				if (valid) yield return new KeyValuePair<int, string>(match.Index, match.Value.ToUpperInvariant());
 
 				match = match.NextMatch();
 			}
