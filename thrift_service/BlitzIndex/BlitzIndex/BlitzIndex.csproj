@@ -44,11 +44,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Album.cs" />
+    <Compile Include="Album2.cs" />
     <Compile Include="Artist.cs" />
     <Compile Include="DocumentType.cs" />
     <Compile Include="FacetFilter.cs" />
     <Compile Include="FacetResult.cs" />
     <Compile Include="FacetValue.cs" />
+    <Compile Include="IDocument.cs" />
     <Compile Include="Indexer.cs" />
     <Compile Include="NodeType.cs" />
     <Compile Include="Program.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="QueryResult.cs" />
     <Compile Include="QueryTreeNode.cs" />
     <Compile Include="indexer\Database.cs" />
+    <Compile Include="TextTokenizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

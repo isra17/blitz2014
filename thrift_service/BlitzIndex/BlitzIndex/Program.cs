@@ -10,6 +10,7 @@ namespace BlitzIndex
 {
     class IndexerHandler : Indexer.Iface
     {
+
         public void indexArtist(Artist artistToIndex)
         {
             Console.WriteLine("Artist " + artistToIndex.Id);
@@ -19,6 +20,11 @@ namespace BlitzIndex
         {
             Console.WriteLine("Album " + albumToIndex.Id);
         }
+
+		public void indexDocument(IDocument document)
+		{
+
+		}
 
         public QueryResponse query(Query query)
         {
