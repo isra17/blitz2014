@@ -24,14 +24,17 @@ namespace BlitzIndex
 			public void AddValue(string value)
 			{
 				FacetValue facetValue;
-				if (!values.TryGetValue(value, out facetValue))
+				if (values.TryGetValue(value, out facetValue))
+				{
+					facetValue.Count++;
+				}
+				else
 				{
 					facetValue = new FacetValue();
 					facetValue.Value = value;
+					values.Add(value, facetValue);
 					Result.Values.Add(facetValue);
 				}
-
-				facetValue.Count++;
 			}
 		}
 
