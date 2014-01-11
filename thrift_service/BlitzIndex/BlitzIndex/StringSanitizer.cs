@@ -10,7 +10,7 @@ namespace com.coveo.blitz.thrift
 	{
 		public static string Sanitize(string str)
 		{
-			return str == null ? null : str.ToLowerInvariant().Trim();
+			return str == null ? null : str.ToUpperInvariant().Trim();
 		}
 
 		public static void Sanitize(THashSet<string> strings)

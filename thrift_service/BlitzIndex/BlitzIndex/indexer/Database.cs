@@ -31,15 +31,15 @@ namespace BlitzIndex
             }
 
             Dictionary<string, List<int>> keywordOccurences = new Dictionary<string, List<int>>();
-            foreach (var keyword in entry.Keywords)
+            foreach (var token in entry.Keywords)
             {
                 List<int> positions;
-                if (!keywordOccurences.TryGetValue(keyword.Value, out positions))
+				if (!keywordOccurences.TryGetValue(token.Value, out positions))
                 {
                     positions = new List<int>();
-                    keywordOccurences.Add(keyword.Value, positions);
+					keywordOccurences.Add(token.Value, positions);
                 }
-                positions.Add(keyword.Key);
+				positions.Add(token.StartIndex);
             }
 
             foreach (var pair in keywordOccurences)

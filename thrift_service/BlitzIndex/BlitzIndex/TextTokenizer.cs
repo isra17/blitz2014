@@ -12,7 +12,15 @@ namespace com.coveo.blitz.thrift
 		private static readonly Regex tokenizeRegex = new Regex(
 			@"[\p{L}-_\d]+", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-		public static IEnumerable<KeyValuePair<int, string>> Tokenize(string text)
+		public static TextToken? GetNextToken(string text, int index)
+		{
+			if (text == null) return null;
+			var match = tokenizeRegex.Match(text, index);
+			if (!match.Success) return null;
+			return new TextToken(match.Index, match.Value.ToUpperInvariant());
+		}
+
+		public static IEnumerable<TextToken> Tokenize(string text)
 		{
 			if (text == null) yield break;
 
@@ -30,7 +38,7 @@ namespace com.coveo.blitz.thrift
 					}
 				}
 
-				if (valid) yield return new KeyValuePair<int, string>(match.Index, match.Value.ToUpperInvariant());
+				if (valid) yield return new TextToken(match.Index, match.Value.ToUpperInvariant());
 
 				match = match.NextMatch();
 			}
