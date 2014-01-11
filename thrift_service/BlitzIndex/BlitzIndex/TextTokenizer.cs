@@ -14,7 +14,7 @@ namespace com.coveo.blitz.thrift
 
 		public static IEnumerable<string> Tokenize(string text)
 		{
-			Contract.Requires(text != null);
+			if (text == null) yield break;
 
 			Match match = tokenizeRegex.Match(text);
 			while (match.Success)

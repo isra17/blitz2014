@@ -30,6 +30,8 @@ namespace BlitzIndex
         public QueryResponse query(Query query)
         {
             QueryResponse response = new QueryResponse();
+			response.Results = new List<QueryResult>();
+			response.Facets = new List<FacetResult>();
             Dictionary<int, QueryTreeNode> treeNodes = query.QueryTreeNodes.ToDictionary(n => n.Id);
             QueryTreeNode treeNode = treeNodes[query.RootId];
 
@@ -48,8 +50,10 @@ namespace BlitzIndex
 					if (!facetResults.TryGetValue(facetName, out facetResult))
 					{
 						facetResult = new FacetResult();
+						facetResult.Values = new List<FacetValue>();
 						facetResult.MetadataName = facetName;
 						facetResults.Add(facetName, facetResult);
+						response.Facets.Add(facetResult);
 					}
 
 					foreach (string value in document.GetFacetValues(facetName))
