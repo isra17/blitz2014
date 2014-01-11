@@ -6,7 +6,7 @@ namespace BlitzIndex
 {
 	public class Database
 	{
-		Dictionary<string, HashSet<IDocument>> m_key_entries = new Dictionary<string, HashSet<IDocument>>();
+		Dictionary<string, HashSet<IDocument>> m_key_entries = new Dictionary<string, HashSet<IDocument>>(StringComparer.InvariantCultureIgnoreCase);
 		Dictionary<string, IDocument> m_entries = new Dictionary<string, IDocument>();
 		
 		public Database ()
@@ -32,6 +32,8 @@ namespace BlitzIndex
 		
 		public HashSet<IDocument> Query(string keyword)
 		{
+			keyword = keyword.Trim();
+
 			if(keyword == "*")
 				return new HashSet<IDocument>(m_entries.Values);
 			

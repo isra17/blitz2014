@@ -54,6 +54,7 @@
     <Compile Include="IDocument.cs" />
     <Compile Include="Indexer.cs" />
     <Compile Include="NodeType.cs" />
+    <Compile Include="PrettyPrint.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query.cs" />
@@ -78,6 +79,5 @@
   -->
   <ItemGroup>
     <Folder Include="indexer\" />
-    <Folder Include="client\" />
   </ItemGroup>
 </Project>
