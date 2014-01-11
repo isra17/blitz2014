@@ -83,6 +83,7 @@ namespace com.coveo.blitz.thrift
 
 		private void FilterFacets(List<ScoredResult> results)
 		{
+			if (query.FacetFilters == null) return;
 			for (int i = results.Count - 1; i >= 0; --i)
 			{
 				var result = results[i];
