@@ -38,31 +38,9 @@ namespace com.coveo.blitz.thrift
         public IEnumerable<IDocument> Evaluate(Database db)
         {
             // tri par pertinence
-			var results = new List<ScoredResult>();
-			var scores = new Dictionary<IDocument, ScoredResult>();
+			var results = GetScoredResults(db);
 
-            foreach (var document in FindDocuments(db, RootNode))
-            {
-                double tf = Math.Log10(document.Occurrences.Count + 1);
-                double idf = Math.Log10(db.Count / (db.CountDocumentsWithTerm(document.Term) + 1));
-                double product = tf * idf;
-
-				ScoredResult result;
-				if (scores.TryGetValue(document.Document, out result))
-                {
-					result.Score += product;
-                }
-                else
-                {
-					result = new ScoredResult
-					{
-						Document = document.Document,
-						Score = result.Score
-					};
-					results.Add(result);
-					scores.Add(document.Document, result);
-                }
-            }
+			FilterFacets(results);
 
 			results.Sort((a, b) =>
 				{
@@ -73,9 +51,70 @@ namespace com.coveo.blitz.thrift
 			return results.Select(result => result.Document);
         }
 
-		private void Filter(IEnumerable<IDocument> document)
+		private List<ScoredResult> GetScoredResults(Database db)
 		{
-			
+			var results = new List<ScoredResult>();
+			var scores = new Dictionary<IDocument, ScoredResult>();
+			foreach (var document in FindDocuments(db, RootNode))
+			{
+				double tf = Math.Log10(document.Occurrences.Count + 1);
+				double idf = Math.Log10(db.Count / (db.CountDocumentsWithTerm(document.Term) + 1));
+				double product = tf * idf;
+
+				ScoredResult result;
+				if (scores.TryGetValue(document.Document, out result))
+				{
+					result.Score += product;
+				}
+				else
+				{
+					result = new ScoredResult
+					{
+						Document = document.Document,
+						Score = result.Score
+					};
+					results.Add(result);
+					scores.Add(document.Document, result);
+				}
+			}
+
+			return results;
+		}
+
+		private void FilterFacets(List<ScoredResult> results)
+		{
+			for (int i = results.Count - 1; i >= 0; --i)
+			{
+				var result = results[i];
+				if (!PassesFacetFilters(result.Document))
+				{
+					results[i] = results[results.Count - 1];
+					results.RemoveAt(results.Count - 1);
+				}
+			}
+		}
+
+		private bool PassesFacetFilters(IDocument document)
+		{
+			foreach (var facetFilter in query.FacetFilters)
+			{
+				var documentFacetValues = document.GetFacetValues(facetFilter.MetadataName);
+
+				// We need at least one of the facet filter values
+				bool passes = false;
+				foreach (var facetFilterValue in facetFilter.Values)
+				{
+					if (documentFacetValues.Contains(facetFilterValue))
+					{
+						passes = true;
+						break;
+					}
+				}
+
+				if (!passes) return false;
+			}
+
+			return true;
 		}
 
 		private bool MatchesFullText(SearchResult result, string[] words, int occurenceIndex)
