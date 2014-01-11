@@ -10,6 +10,7 @@ namespace BlitzIndex
 {
     class IndexerHandler : Indexer.Iface
     {
+        private Database db = new Database();
 
         public void indexArtist(Artist artistToIndex)
         {
@@ -28,17 +29,16 @@ namespace BlitzIndex
 
         public QueryResponse query(Query query)
         {
+            QueryResponse response = new QueryResponse();
             QueryTreeNode treeNode = query.QueryTreeNodes[query.RootId];
-            if (treeNode.Value == "*")
+            foreach (IDocument document in db.Query(treeNode.Value))
             {
-                // dump everything
+                QueryResult result = new QueryResult();
+                result.DocumentType = document.Type;
+                result.Id = document.Id;
+                response.Results.Add(result);
             }
-            else
-            {
-                // identical match for a SINGLE keyword
-                string identicalMatch = treeNode.Value;
-            }
-            return new QueryResponse();
+            return response;
         }
 
         public void reset()
