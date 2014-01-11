@@ -162,9 +162,11 @@ namespace com.coveo.blitz.thrift
             }
 
             var operatorName = specificNode.Value.ToUpperInvariant().Trim();
-            var right = FindDocuments(db, treeNodes[specificNode.RightPart]);
             if (operatorName == "NOT")
             {
+                int index = specificNode.RightPart;
+                if (index == -1)
+                    index = specificNode.LeftPart;
                 HashSet<SearchResult> all = db.Query("*");
                 foreach (SearchResult r in right)
                     all.Remove(r);
@@ -172,6 +174,7 @@ namespace com.coveo.blitz.thrift
             }
             else
             {
+                var right = FindDocuments(db, treeNodes[specificNode.RightPart]);
                 var left = FindDocuments(db, treeNodes[specificNode.LeftPart]);
                 if (operatorName == "AND")
                 {
@@ -180,10 +183,6 @@ namespace com.coveo.blitz.thrift
                 else if (operatorName == "OR")
                 {
                     left.UnionWith(right);
-                }
-                else
-                {
-                    //throw new NotImplementedException();
                 }
                 return left;
             }
