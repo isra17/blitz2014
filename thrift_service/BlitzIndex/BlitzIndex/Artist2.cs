@@ -20,9 +20,22 @@ namespace com.coveo.blitz.thrift
 			get { return TextTokenizer.Tokenize(Text); }
 		}
 
-		public IEnumerable<string> FacetNames
+		public string[] FacetNames
 		{
 			get { return facetNames; }
+		}
+
+		public void Sanitize()
+		{
+			StringSanitizer.Sanitize(_name);
+			StringSanitizer.Sanitize(_origin);
+			StringSanitizer.Sanitize(_active_start);
+			StringSanitizer.Sanitize(_active_end);
+			StringSanitizer.Sanitize(_genres);
+			StringSanitizer.Sanitize(_labels);
+			StringSanitizer.Sanitize(_albums);
+			StringSanitizer.Sanitize(_group_names);
+			StringSanitizer.Sanitize(_instruments_played);
 		}
 
 		public THashSet<string> GetFacetValues(string name)

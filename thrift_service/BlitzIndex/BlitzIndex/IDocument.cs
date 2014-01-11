@@ -12,8 +12,9 @@ namespace com.coveo.blitz.thrift
 		string Text { get; }
 		DocumentType Type { get; }
 		IEnumerable<string> Keywords { get; }
-		IEnumerable<string> FacetNames { get; }
+		string[] FacetNames { get; }
 
+		void Sanitize();
 		THashSet<string> GetFacetValues(string name);
 	}
 }

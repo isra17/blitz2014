@@ -5,6 +5,9 @@ using System.Text;
 using com.coveo.blitz.thrift;
 using Thrift.Server;
 using Thrift.Transport;
+using System.Net;
+using System.Threading;
+using System.Globalization;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -65,9 +68,6 @@ namespace BlitzIndex
 				t.Wait();
 			m_tasks.Clear();
 
-            QueryResponse response = new QueryResponse();
-            response.Results = new List<QueryResult>();
-            response.Facets = new List<FacetResult>();
             Dictionary<int, QueryTreeNode> treeNodes = query.QueryTreeNodes.ToDictionary(n => n.Id);
 
             var responseBuilder = new QueryResponseBuilder();
@@ -87,7 +87,6 @@ namespace BlitzIndex
 
         public void reset()
         {
-            Console.WriteLine("Reset");
             m_db.Reset();
         }
 
@@ -110,7 +109,11 @@ namespace BlitzIndex
     class Program
     {
         static void Main(string[] args)
-        {
+		{
+			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+			Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+			ServicePointManager.DefaultConnectionLimit = int.MaxValue;
+
             IndexerHandler handler = new IndexerHandler();
             Indexer.Processor processor = new Indexer.Processor(handler);
 
