@@ -10,28 +10,31 @@ namespace BlitzIndex
 {
     class IndexerHandler : Indexer.Iface
     {
-        private Database db = new Database();
+		private Database m_db = new Database();
 
         public void indexArtist(Artist artistToIndex)
         {
             Console.WriteLine("Artist " + artistToIndex.Id);
+			indexDocument(artistToIndex);
         }
 
         public void indexAlbum(Album albumToIndex)
         {
             Console.WriteLine("Album " + albumToIndex.Id);
+			indexDocument(albumToIndex);
         }
 
 		public void indexDocument(IDocument document)
 		{
-
+			Console.WriteLine("{0} {1}", document.Type, document.Id);
+			m_db.Insert(document);
 		}
 
         public QueryResponse query(Query query)
         {
             QueryResponse response = new QueryResponse();
             QueryTreeNode treeNode = query.QueryTreeNodes[query.RootId];
-            foreach (IDocument document in db.Query(treeNode.Value))
+            foreach (IDocument document in m_db.Query(treeNode.Value))
             {
                 QueryResult result = new QueryResult();
                 result.DocumentType = document.Type;
