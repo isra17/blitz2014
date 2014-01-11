@@ -6,11 +6,16 @@ using com.coveo.blitz.thrift;
 using Thrift.Server;
 using Thrift.Transport;
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace BlitzIndex
 {
     class IndexerHandler : Indexer.Iface
     {
         private readonly Database m_db = new Database();
+		private readonly List<Task> m_tasks = new List<Task>();
+		bool m_must_wait_task = false;
 
         public void indexArtist(Artist artistToIndex)
         {
@@ -24,7 +29,9 @@ namespace BlitzIndex
 
         public void indexDocument(IDocument document)
         {
-            //m_db.Insert(document);
+			m_must_wait_task = true;
+			Task t = Task.Factory.StartNew(() => m_db.Insert(document));
+			m_tasks.Add(t);
         }
 
         private HashSet<IDocument> EvaluateQuery(Dictionary<int, QueryTreeNode> inputNodes, QueryTreeNode specificNode)
@@ -56,6 +63,8 @@ namespace BlitzIndex
         {
             //Console.WriteLine("{0} documents in db", m_db.Count);
             //PrettyPrint.PrintQuery(query);
+			if(m_must_wait_task)
+				Task.WaitAll(m_tasks.ToArray());
 
             QueryResponse response = new QueryResponse();
             response.Results = new List<QueryResult>();
