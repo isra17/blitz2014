@@ -15,8 +15,7 @@ namespace com.coveo.blitz.thrift
 		}
 
 		private readonly Query query;
-        private Dictionary<int, QueryTreeNode> treeNodes;
-        private int rootId;
+        private readonly AST.Node expression;
 
         public static IEnumerable<IDocument> EvaluateQuery(Database db, Query query)
         {
@@ -26,13 +25,7 @@ namespace com.coveo.blitz.thrift
         public QueryEvaluator(Query query)
         {
 			this.query = query;
-            treeNodes = query.QueryTreeNodes.ToDictionary(n => n.Id);
-            rootId = query.RootId;
-        }
-
-        private QueryTreeNode RootNode
-        {
-            get { return treeNodes[rootId]; }
+            expression = AST.Node.BuildAst(query);
         }
 
         public IEnumerable<IDocument> Evaluate(Database db)
@@ -55,7 +48,8 @@ namespace com.coveo.blitz.thrift
 		{
 			var results = new List<ScoredResult>();
 			var scores = new Dictionary<IDocument, ScoredResult>();
-			foreach (var document in FindDocuments(db, RootNode))
+
+			foreach (var document in expression.Evaluate(db))
             {
                 double tf = Math.Log10(document.Occurrences.Count + 1);
                 double idf = Math.Log10((double)db.Count / (double)(db.CountDocumentsWithTerm(document.Term) + 1));
@@ -140,55 +134,5 @@ namespace com.coveo.blitz.thrift
 					return true;
 			return false;
 		}
-
-        private HashSet<SearchResult> FindDocuments(Database db, QueryTreeNode specificNode)
-        {
-            if (specificNode.Type == NodeType.LITERAL)
-            {
-                var searchString = specificNode.Value.Trim();
-                if (searchString == "*")
-                {
-                    return db.Query(searchString);
-                }
-
-                var words = TextTokenizer.Tokenize(specificNode.Value).Select(t => t.Value).ToArray();
-                if (words.Length == 0)
-                    return new HashSet<SearchResult>();
-
-                var results = db.Query(words[0]);
-                if (words.Length > 1)
-                    results.RemoveWhere(result => !MatchesFullText(result, words));
-
-                return results;
-            }
-
-            var operatorName = specificNode.Value.ToUpperInvariant().Trim();
-            if (operatorName == "NOT")
-            {
-                int index = specificNode.RightPart;
-                if (index == -1)
-                    index = specificNode.LeftPart;
-
-                var set = FindDocuments(db, treeNodes[index]);
-                HashSet<SearchResult> all = db.Query("*");
-                foreach (SearchResult r in set)
-                    all.Remove(r);
-                return all;
-            }
-            else
-            {
-                var right = FindDocuments(db, treeNodes[specificNode.RightPart]);
-                var left = FindDocuments(db, treeNodes[specificNode.LeftPart]);
-                if (operatorName == "AND")
-                {
-                    left.IntersectWith(right);
-                }
-                else if (operatorName == "OR")
-                {
-                    left.UnionWith(right);
-                }
-                return left;
-            }
-        }
     }
 }

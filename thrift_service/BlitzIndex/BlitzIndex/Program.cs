@@ -35,8 +35,6 @@ namespace BlitzIndex
 
         public QueryResponse query(Query query)
         {
-            //Console.WriteLine("{0} documents in db", m_db.Count);
-            //PrettyPrint.PrintQuery(query);
 			foreach(Task t in m_tasks)
 				t.Wait();
 			m_tasks.Clear();
@@ -46,10 +44,6 @@ namespace BlitzIndex
             var results = QueryEvaluator.EvaluateQuery(m_db, query);
             foreach (IDocument document in results)
             {
-                //Console.WriteLine(document.Id + ":");
-                //Console.WriteLine(document.Text);
-                //Console.WriteLine();
-
                 responseBuilder.AddNewDocument(document);
             }
 
