@@ -68,7 +68,13 @@
     <Compile Include="Album2.cs" />
     <Compile Include="Artist.cs" />
     <Compile Include="Artist2.cs" />
-    <Compile Include="AST\Nodes.cs" />
+    <Compile Include="AST\AndNode.cs" />
+    <Compile Include="AST\InvalidNode.cs" />
+    <Compile Include="AST\LiteralNode.cs" />
+    <Compile Include="AST\Node.cs" />
+    <Compile Include="AST\NotNode.cs" />
+    <Compile Include="AST\OrNode.cs" />
+    <Compile Include="AST\WildcardNode.cs" />
     <Compile Include="DocumentType.cs" />
     <Compile Include="FacetFilter.cs" />
     <Compile Include="FacetResult.cs" />

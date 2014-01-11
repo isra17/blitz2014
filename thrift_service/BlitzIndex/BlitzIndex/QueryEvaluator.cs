@@ -112,27 +112,5 @@ namespace com.coveo.blitz.thrift
 
 			return true;
 		}
-
-		private bool MatchesFullText(SearchResult result, string[] words, int occurenceIndex)
-		{
-			int nextTokenStartIndex = occurenceIndex + words[0].Length;
-			for (int wordIndex = 1; wordIndex < words.Length; ++wordIndex)
-			{
-				var token = TextTokenizer.GetNextToken(result.Document.Text, nextTokenStartIndex);
-				if (!token.HasValue || token.Value.Value != words[wordIndex])
-					return false;
-			}
-
-			return true;
-		}
-
-		private bool MatchesFullText(SearchResult result, string[] words)
-		{
-			// At least one of the occurence should also match the other words
-			foreach (var occurenceIndex in result.Occurrences)
-				if (MatchesFullText(result, words, occurenceIndex))
-					return true;
-			return false;
-		}
     }
 }
