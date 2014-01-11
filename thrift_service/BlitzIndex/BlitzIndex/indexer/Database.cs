@@ -7,6 +7,7 @@ namespace BlitzIndex
 {
 	public class Database
     {
+        private static readonly List<int> emptyIntList = new List<int>();
 		private static readonly Func<string, HashSet<SearchResult>> searchResultFactory
 			= str => new HashSet<SearchResult>();
         private ConcurrentDictionary<string, HashSet<SearchResult>> m_key_entries = new ConcurrentDictionary<string, HashSet<SearchResult>>(StringComparer.Ordinal);
@@ -26,15 +27,19 @@ namespace BlitzIndex
 		{
             lock (m_entries)
             {
-                m_entries.Add(entry.Id, new SearchResult(entry, 0));
+                m_entries.Add(entry.Id, new SearchResult(entry, emptyIntList));
             }
 
-            Dictionary<string, int> keywordCount = new Dictionary<string, int>();
+            Dictionary<string, List<int>> keywordCount = new Dictionary<string, List<int>>();
             foreach (string keyword in entry.Keywords)
             {
-                if (!keywordCount.ContainsKey(keyword))
-                    keywordCount.Add(keyword, 0);
-                keywordCount[keyword]++;
+                List<int> positions;
+                if (!keywordCount.TryGetValue(keyword, out positions))
+                {
+                    positions = new List<int>();
+                    keywordCount.Add(keyword, positions);
+                }
+                positions.Add(0); // TODO add token location
             }
 
             foreach (var pair in keywordCount)

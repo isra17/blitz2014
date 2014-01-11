@@ -8,8 +8,6 @@ using Thrift.Transport;
 using System.Net;
 using System.Threading;
 using System.Globalization;
-
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace BlitzIndex
