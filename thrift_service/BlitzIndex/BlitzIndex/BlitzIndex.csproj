@@ -53,6 +53,7 @@
     <Compile Include="FacetFilter.cs" />
     <Compile Include="FacetResult.cs" />
     <Compile Include="FacetValue.cs" />
+    <Compile Include="IDocument.cs" />
     <Compile Include="Indexer.cs" />
     <Compile Include="NodeType.cs" />
     <Compile Include="Program.cs" />
