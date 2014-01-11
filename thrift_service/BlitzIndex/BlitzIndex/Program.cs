@@ -15,7 +15,6 @@ namespace BlitzIndex
     {
         private readonly Database m_db = new Database();
 		private readonly List<Task> m_tasks = new List<Task>();
-		bool m_must_wait_task = false;
 
         public void indexArtist(Artist artistToIndex)
         {
@@ -29,7 +28,6 @@ namespace BlitzIndex
 
         public void indexDocument(IDocument document)
         {
-			m_must_wait_task = true;
 			Task t = Task.Factory.StartNew(() => m_db.Insert(document));
 			m_tasks.Add(t);
         }
@@ -63,8 +61,9 @@ namespace BlitzIndex
         {
             //Console.WriteLine("{0} documents in db", m_db.Count);
             //PrettyPrint.PrintQuery(query);
-			if(m_must_wait_task)
-				Task.WaitAll(m_tasks.ToArray());
+			foreach(Task t in m_task)
+				t.Wait();
+			m_task.Clear();
 
             QueryResponse response = new QueryResponse();
             response.Results = new List<QueryResult>();
