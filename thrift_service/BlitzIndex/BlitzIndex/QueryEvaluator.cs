@@ -99,9 +99,10 @@ namespace com.coveo.blitz.thrift
 		{
 			foreach (var facetFilter in query.FacetFilters)
 			{
-				var documentFacetValues = document.GetFacetValues(facetFilter.MetadataName);
-
 				// We need at least one of the facet filter values
+				var documentFacetValues = document.GetFacetValues(facetFilter.MetadataName);
+				if (documentFacetValues == null) return false;
+
 				bool passes = false;
 				foreach (var facetFilterValue in facetFilter.Values)
 				{
