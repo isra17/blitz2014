@@ -7,6 +7,9 @@ namespace BlitzIndex
 {
 	public class Database
     {
+        private static readonly List<int> emptyIntList = new List<int>();
+		private static readonly Func<string, HashSet<SearchResult>> searchResultFactory
+			= str => new HashSet<SearchResult>();
         private ConcurrentDictionary<string, HashSet<SearchResult>> m_key_entries = new ConcurrentDictionary<string, HashSet<SearchResult>>(StringComparer.Ordinal);
         private Dictionary<string, SearchResult> m_entries = new Dictionary<string, SearchResult>(StringComparer.Ordinal);
 		
@@ -24,20 +27,24 @@ namespace BlitzIndex
 		{
             lock (m_entries)
             {
-                m_entries.Add(entry.Id, new SearchResult(entry, 0));
+                m_entries.Add(entry.Id, new SearchResult(entry, emptyIntList));
             }
 
-            Dictionary<string, int> keywordCount = new Dictionary<string, int>();
-            foreach (string keyword in entry.Keywords)
+            Dictionary<string, List<int>> keywordOccurences = new Dictionary<string, List<int>>();
+            foreach (var token in entry.Keywords)
             {
-                if (!keywordCount.ContainsKey(keyword))
-                    keywordCount.Add(keyword, 0);
-                keywordCount[keyword]++;
+                List<int> positions;
+				if (!keywordOccurences.TryGetValue(token.Value, out positions))
+                {
+                    positions = new List<int>();
+					keywordOccurences.Add(token.Value, positions);
+                }
+				positions.Add(token.StartIndex);
             }
 
-            foreach (var pair in keywordCount)
+            foreach (var pair in keywordOccurences)
             {
-				HashSet<SearchResult> keywordSet = m_key_entries.GetOrAdd(pair.Key, new HashSet<SearchResult>());
+				HashSet<SearchResult> keywordSet = m_key_entries.GetOrAdd(pair.Key, searchResultFactory);
                 lock (keywordSet)
                 {
                     keywordSet.Add(new SearchResult(entry, pair.Value));
@@ -47,7 +54,7 @@ namespace BlitzIndex
 		
 		public HashSet<SearchResult> Query(string keyword)
 		{
-			keyword = keyword.Trim();
+			keyword = keyword.ToUpperInvariant().Trim();
 
 			if(keyword == "*")
                 return new HashSet<SearchResult>(m_entries.Values);

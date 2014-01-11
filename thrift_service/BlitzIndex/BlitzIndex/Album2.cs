@@ -16,17 +16,23 @@ namespace com.coveo.blitz.thrift
 			get { return DocumentType.ALBUM; }
 		}
 
-		public IEnumerable<string> Keywords
+		public IEnumerable<TextToken> Keywords
 		{
-			get
-			{
-				return TextTokenizer.Tokenize(Text);
-			}
+			get { return TextTokenizer.Tokenize(Text); }
 		}
 
-		public IEnumerable<string> FacetNames
+		public string[] FacetNames
 		{
 			get { return facetNames; }
+		}
+
+		public void Sanitize()
+		{
+			StringSanitizer.Sanitize(_name);
+			StringSanitizer.Sanitize(_artists);
+			StringSanitizer.Sanitize(_release_date);
+			StringSanitizer.Sanitize(_genres);
+			StringSanitizer.Sanitize(_track_names);
 		}
 
 		public THashSet<string> GetFacetValues(string name)

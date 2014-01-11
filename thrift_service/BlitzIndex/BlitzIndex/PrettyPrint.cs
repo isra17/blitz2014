@@ -27,10 +27,15 @@ namespace BlitzIndex
                 RecursivePrintTree(inputNodes, inputNodes[specificNode.RightPart]));
         }
 
+		public static string GetQueryString(Query query)
+		{
+			var inputNodes = query.QueryTreeNodes.ToDictionary(n => n.Id);
+			return RecursivePrintTree(inputNodes, inputNodes[query.RootId]);
+		}
+
         public static void PrintQuery(Query query)
         {
-            Dictionary<int, QueryTreeNode> inputNodes = query.QueryTreeNodes.ToDictionary(n => n.Id);
-            Console.WriteLine(RecursivePrintTree(inputNodes, inputNodes[query.RootId]));
+			Console.WriteLine(GetQueryString(query));
         }
     }
 }
