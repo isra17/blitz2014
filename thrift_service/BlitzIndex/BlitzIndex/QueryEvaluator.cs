@@ -71,7 +71,7 @@ namespace com.coveo.blitz.thrift
 					result = new ScoredResult
 					{
 						Document = document.Document,
-						Score = result.Score
+						Score = product
 					};
 					results.Add(result);
 					scores.Add(document.Document, result);
