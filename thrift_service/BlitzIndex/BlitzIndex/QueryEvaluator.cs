@@ -167,8 +167,10 @@ namespace com.coveo.blitz.thrift
                 int index = specificNode.RightPart;
                 if (index == -1)
                     index = specificNode.LeftPart;
+
+                var set = FindDocuments(db, treeNodes[index]);
                 HashSet<SearchResult> all = db.Query("*");
-                foreach (SearchResult r in right)
+                foreach (SearchResult r in set)
                     all.Remove(r);
                 return all;
             }
