@@ -26,6 +26,22 @@ namespace com.coveo.blitz.thrift
         {
 			this.query = query;
             expression = AST.Node.BuildAst(query);
+
+			// sanitize facet filters
+			if (query.FacetFilters != null)
+			{
+				foreach (var facetFilter in query.FacetFilters)
+				{
+					facetFilter.MetadataName = facetFilter.MetadataName.ToLowerInvariant().Trim();
+					if (facetFilter.Values != null)
+					{
+						for (int i = 0; i < facetFilter.Values.Count; ++i)
+						{
+							facetFilter.Values[i] = facetFilter.Values[i].Trim();
+						}
+					}
+				}
+			}
         }
 
         public IEnumerable<IDocument> Evaluate(Database db)
@@ -97,17 +113,18 @@ namespace com.coveo.blitz.thrift
 				var documentFacetValues = document.GetFacetValues(facetFilter.MetadataName);
 				if (documentFacetValues == null) return false;
 
-				bool passes = false;
 				foreach (var facetFilterValue in facetFilter.Values)
 				{
-					if (documentFacetValues.Contains(facetFilterValue))
+					foreach (string documentFacetValue in documentFacetValues)
 					{
-						passes = true;
-						break;
+						if (string.Equals(documentFacetValue, facetFilterValue, StringComparison.OrdinalIgnoreCase))
+							goto passes;
 					}
 				}
 
-				if (!passes) return false;
+				return false;
+
+			passes: ;
 			}
 
 			return true;
