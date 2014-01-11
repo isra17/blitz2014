@@ -61,6 +61,7 @@
     <Compile Include="QueryResponse.cs" />
     <Compile Include="QueryResult.cs" />
     <Compile Include="QueryTreeNode.cs" />
+    <Compile Include="TextTokenizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
