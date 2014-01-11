@@ -14,7 +14,7 @@ namespace com.coveo.blitz.thrift
 		IEnumerable<TextToken> Keywords { get; }
 		string[] FacetNames { get; }
 
-		void Sanitize();
+		void FullText();
 		THashSet<string> GetFacetValues(string name);
 	}
 }

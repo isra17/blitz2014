@@ -29,7 +29,11 @@ namespace BlitzIndex
 
         public void indexDocument(IDocument document)
         {
-			Task t = Task.Factory.StartNew(() => m_db.Insert(document));
+			Task t = Task.Factory.StartNew(() => 
+				{
+					document.FullText();
+					m_db.Insert(document);
+				});
 			m_tasks.Add(t);
         }
 

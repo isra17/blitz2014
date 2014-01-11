@@ -26,13 +26,26 @@ namespace com.coveo.blitz.thrift
 			get { return facetNames; }
 		}
 
-		public void Sanitize()
+		public void FullText()
 		{
-			StringSanitizer.Sanitize(_name);
-			StringSanitizer.Sanitize(_artists);
-			StringSanitizer.Sanitize(_release_date);
-			StringSanitizer.Sanitize(_genres);
-			StringSanitizer.Sanitize(_track_names);
+			StringBuilder builder = new StringBuilder(_text);
+			AppendSet(builder, _name);
+			AppendSet(builder, _artists);
+			AppendSet(builder, _release_date);
+			AppendSet(builder, _genres);
+			AppendSet(builder, _track_names);
+			_text = builder.ToString();
+		}
+
+		public static void AppendSet(StringBuilder builder, THashSet<string> set)
+		{
+			if (set == null) return;
+			builder.Append(';');
+			foreach (var val in set)
+			{
+				builder.Append(val);
+				builder.Append(';');
+			}
 		}
 
 		public THashSet<string> GetFacetValues(string name)

@@ -25,17 +25,19 @@ namespace com.coveo.blitz.thrift
 			get { return facetNames; }
 		}
 
-		public void Sanitize()
+		public void FullText()
 		{
-			StringSanitizer.Sanitize(_name);
-			StringSanitizer.Sanitize(_origin);
-			StringSanitizer.Sanitize(_active_start);
-			StringSanitizer.Sanitize(_active_end);
-			StringSanitizer.Sanitize(_genres);
-			StringSanitizer.Sanitize(_labels);
-			StringSanitizer.Sanitize(_albums);
-			StringSanitizer.Sanitize(_group_names);
-			StringSanitizer.Sanitize(_instruments_played);
+			StringBuilder builder = new StringBuilder(_text);
+			Album.AppendSet(builder, _name);
+			Album.AppendSet(builder, _origin);
+			Album.AppendSet(builder, _active_start);
+			Album.AppendSet(builder, _active_end);
+			Album.AppendSet(builder, _genres);
+			Album.AppendSet(builder, _labels);
+			Album.AppendSet(builder, _albums);
+			Album.AppendSet(builder, _group_names);
+			Album.AppendSet(builder, _instruments_played);
+			_text = builder.ToString();
 		}
 
 		public THashSet<string> GetFacetValues(string name)
