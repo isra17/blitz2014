@@ -17,7 +17,7 @@ namespace com.coveo.blitz.thrift
 			bool hasLetterOrDigit = false;
 			while (true)
 			{
-				if (index == text.Length) break;
+				if (index >= text.Length) break;
 
 				char c = text[index];
 				if (char.IsLetterOrDigit(c))
