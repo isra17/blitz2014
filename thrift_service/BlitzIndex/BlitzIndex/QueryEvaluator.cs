@@ -161,21 +161,31 @@ namespace com.coveo.blitz.thrift
             }
 
             var operatorName = specificNode.Value.ToUpperInvariant().Trim();
-            var left = FindDocuments(db, treeNodes[specificNode.LeftPart]);
             var right = FindDocuments(db, treeNodes[specificNode.RightPart]);
-            if (operatorName == "AND")
+            if (operatorName == "NOT")
             {
-                left.IntersectWith(right);
-            }
-            else if (operatorName == "OR")
-            {
-                left.UnionWith(right);
+                HashSet<SearchResult> all = db.Query("*");
+                foreach (SearchResult r in right)
+                    all.Remove(r);
+                return all;
             }
             else
             {
-                throw new NotImplementedException();
+                var left = FindDocuments(db, treeNodes[specificNode.LeftPart]);
+                if (operatorName == "AND")
+                {
+                    left.IntersectWith(right);
+                }
+                else if (operatorName == "OR")
+                {
+                    left.UnionWith(right);
+                }
+                else
+                {
+                    //throw new NotImplementedException();
+                }
+                return left;
             }
-            return left;
         }
     }
 }
