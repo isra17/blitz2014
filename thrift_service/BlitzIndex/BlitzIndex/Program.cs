@@ -32,7 +32,7 @@ namespace BlitzIndex
 			m_tasks.Add(t);
         }
 
-        private HashSet<IDocument> EvaluateQuery(Dictionary<int, QueryTreeNode> inputNodes, QueryTreeNode specificNode)
+        private HashSet<SearchResult> EvaluateQuery(Dictionary<int, QueryTreeNode> inputNodes, QueryTreeNode specificNode)
         {
             if (specificNode.Type == NodeType.LITERAL)
             {
@@ -72,7 +72,8 @@ namespace BlitzIndex
 
             var responseBuilder = new QueryResponseBuilder();
 
-            foreach (IDocument document in EvaluateQuery(treeNodes, treeNodes[query.RootId]))
+            var results = EvaluateQuery(treeNodes, treeNodes[query.RootId]);
+            foreach (SearchResult document in results)
             {
                 //Console.WriteLine(document.Id + ":");
                 //Console.WriteLine(document.Text);
