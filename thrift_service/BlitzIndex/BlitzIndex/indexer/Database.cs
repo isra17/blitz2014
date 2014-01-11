@@ -7,6 +7,8 @@ namespace BlitzIndex
 {
 	public class Database
     {
+		private static readonly Func<string, HashSet<SearchResult>> searchResultFactory
+			= str => new HashSet<SearchResult>();
         private ConcurrentDictionary<string, HashSet<SearchResult>> m_key_entries = new ConcurrentDictionary<string, HashSet<SearchResult>>(StringComparer.Ordinal);
         private Dictionary<string, SearchResult> m_entries = new Dictionary<string, SearchResult>(StringComparer.Ordinal);
 		
@@ -37,7 +39,7 @@ namespace BlitzIndex
 
             foreach (var pair in keywordCount)
             {
-				HashSet<SearchResult> keywordSet = m_key_entries.GetOrAdd(pair.Key, new HashSet<SearchResult>());
+				HashSet<SearchResult> keywordSet = m_key_entries.GetOrAdd(pair.Key, searchResultFactory);
                 lock (keywordSet)
                 {
                     keywordSet.Add(new SearchResult(entry, pair.Value));
