@@ -41,8 +41,6 @@ namespace BlitzIndex
 				t.Wait();
 			m_tasks.Clear();
 
-            Dictionary<int, QueryTreeNode> treeNodes = query.QueryTreeNodes.ToDictionary(n => n.Id);
-
             var responseBuilder = new QueryResponseBuilder();
 
             var results = QueryEvaluator.EvaluateQuery(m_db, query);
@@ -60,6 +58,7 @@ namespace BlitzIndex
 
         public void reset()
         {
+            Console.WriteLine("Reset");
             m_db.Reset();
         }
 
