@@ -8,7 +8,7 @@ namespace com.coveo.blitz.thrift
 {
 	partial class Artist : IDocument
 	{
-		private static readonly string[] facetNames = { "name", "origin", "active start", "active end", "genres", "labels", "albums", "group names", "instruments played" };
+		private static readonly string[] facetNames = { "name", "origin", "active_start", "active_end", "genres", "labels", "albums", "group_names", "instruments_played" };
 
 		public DocumentType Type
 		{
@@ -42,13 +42,13 @@ namespace com.coveo.blitz.thrift
 		{
 			if (name == "name") return _name;
 			if (name == "origin") return _origin;
-			if (name == "active start") return _active_start;
-			if (name == "active end") return _active_end;
+			if (name == "active_start") return _active_start;
+			if (name == "active_end") return _active_end;
 			if (name == "genres") return _genres;
 			if (name == "labels") return _labels;
 			if (name == "albums") return _albums;
-			if (name == "group names") return _group_names;
-			if (name == "instruments played") return _instruments_played;
+			if (name == "group_names") return _group_names;
+			if (name == "instruments_played") return _instruments_played;
 			return null;
 		}
 	}

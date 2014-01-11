@@ -9,7 +9,7 @@ namespace com.coveo.blitz.thrift
 {
 	partial class Album : IDocument
 	{
-		private static readonly string[] facetNames = { "name", "artists", "release date", "genres", "track names" };
+		private static readonly string[] facetNames = { "name", "artists", "release_date", "genres", "track_names" };
 
 		public DocumentType Type
 		{
@@ -39,9 +39,9 @@ namespace com.coveo.blitz.thrift
 		{
 			if (name == "name") return _name;
 			if (name == "artists") return _artists;
-			if (name == "release date") return _release_date;
+			if (name == "release_date") return _release_date;
 			if (name == "genres") return _genres;
-			if (name == "track names") return _track_names;
+			if (name == "track_names") return _track_names;
 			return null;
 		}
 	}
