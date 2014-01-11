@@ -46,15 +46,16 @@ namespace BlitzIndex
 			response.Facets = new List<FacetResult>();
 		}
 
-		public void AddNewDocument(IDocument document)
+		public void AddNewDocument(SearchResult searchResult)
 		{
+            var document = searchResult.Document;
 			response.Results.Add(new QueryResult
 			{
-				DocumentType = document.Type,
-				Id = document.Id
+                DocumentType = document.Type,
+                Id = document.Id,
 			});
 
-			foreach (var facetName in document.FacetNames)
+            foreach (var facetName in document.FacetNames)
 			{
 				var values = document.GetFacetValues(facetName);
 				if (values != null)

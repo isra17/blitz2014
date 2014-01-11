@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
 using com.coveo.blitz.thrift;
+using System.Collections.Concurrent;
 
 namespace BlitzIndex
 {
 	public class Database
-	{
-		Dictionary<string, HashSet<IDocument>> m_key_entries = new Dictionary<string, HashSet<IDocument>>(StringComparer.Ordinal);
-		Dictionary<string, IDocument> m_entries = new Dictionary<string, IDocument>(StringComparer.Ordinal);
+    {
+        private ConcurrentDictionary<string, HashSet<SearchResult>> m_key_entries = new ConcurrentDictionary<string, HashSet<SearchResult>>(StringComparer.Ordinal);
+        private Dictionary<string, SearchResult> m_entries = new Dictionary<string, SearchResult>(StringComparer.Ordinal);
 		
-		public Database ()
+		public Database()
 		{
 			
 		}
-
 
 		public int Count
 		{
@@ -22,33 +22,42 @@ namespace BlitzIndex
 		
 		public void Insert(IDocument entry)
 		{
-			m_entries.Add(entry.Id, entry);
+            lock (m_entries)
+            {
+                m_entries.Add(entry.Id, new SearchResult(entry, 0));
+            }
 
-			foreach(string keyword in entry.Keywords)
-			{
-				HashSet<IDocument> documents;
-				if(!m_key_entries.TryGetValue(keyword, out documents))
-				{
-					documents = new HashSet<IDocument>();
-					m_key_entries.Add(keyword, documents);
-				}
-				documents.Add(entry);
+            Dictionary<string, int> keywordCount = new Dictionary<string, int>();
+            foreach (string keyword in entry.Keywords)
+            {
+                if (!keywordCount.ContainsKey(keyword))
+                    keywordCount.Add(keyword, 0);
+                keywordCount[keyword]++;
+            }
+
+            foreach (var pair in keywordCount)
+            {
+				HashSet<SearchResult> keywordSet = m_key_entries.GetOrAdd(pair.Key, new HashSet<SearchResult>());
+                lock (keywordSet)
+                {
+                    keywordSet.Add(new SearchResult(entry, pair.Value));
+                }
 			}
 		}
 		
-		public HashSet<IDocument> Query(string keyword)
+		public HashSet<SearchResult> Query(string keyword)
 		{
 			keyword = keyword.Trim();
 
 			if(keyword == "*")
-				return new HashSet<IDocument>(m_entries.Values);
-			
-			HashSet<IDocument> set;
+                return new HashSet<SearchResult>(m_entries.Values);
+
+            HashSet<SearchResult> set;
 			if (m_key_entries.TryGetValue(keyword, out set))
 			{
 				return set;
 			}
-			return new HashSet<IDocument>();
+            return new HashSet<SearchResult>();
 		}	
 		
 		public void Reset() 
@@ -59,8 +68,8 @@ namespace BlitzIndex
 		
 		public IDocument GetDocument(string id)
 		{
-			return m_entries[id];
-	}
+			return m_entries[id].Document;
+	    }
 	}
 }
 
