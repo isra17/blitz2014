@@ -48,6 +48,11 @@ namespace BlitzIndex
 			m_entries.Clear();
 			m_key_entries.Clear();
 		}
+		
+		public IDocument GetDocument(string id)
+		{
+			return m_entries[id];
+		}
 	}
 }
 

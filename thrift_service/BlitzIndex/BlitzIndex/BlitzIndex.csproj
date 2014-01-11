@@ -65,6 +65,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="document.thrift" />
+    <None Include="indexer.thrift" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -76,5 +78,6 @@
   -->
   <ItemGroup>
     <Folder Include="indexer\" />
+    <Folder Include="client\" />
   </ItemGroup>
 </Project>

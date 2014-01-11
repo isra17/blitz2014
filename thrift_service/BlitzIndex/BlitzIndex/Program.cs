@@ -84,6 +84,16 @@ namespace BlitzIndex
         {
             Console.WriteLine("Ping");
         }
+		
+		public Album GetAlbum(string id)
+		{
+			return (Album)m_db.GetDocument(id);
+		}
+		
+		public Artist GetArtist(string id)
+		{
+			return (Artist)m_db.GetDocument(id);
+		}
     }
 
     class Program
