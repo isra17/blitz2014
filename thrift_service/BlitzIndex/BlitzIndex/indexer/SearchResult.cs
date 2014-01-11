@@ -8,11 +8,13 @@ namespace BlitzIndex
 {
     public class SearchResult
     {
+        public string Term { get; private set; }
         public List<int> Occurrences { get; private set; }
         public IDocument Document { get; private set; }
 
-        public SearchResult(IDocument document, List<int> occurrences)
+        public SearchResult(string term, IDocument document, List<int> occurrences)
         {
+            Term = term;
             Document = document;
             Occurrences = occurrences;
         }

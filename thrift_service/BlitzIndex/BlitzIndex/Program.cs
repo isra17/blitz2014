@@ -33,31 +33,6 @@ namespace BlitzIndex
 			m_tasks.Add(t);
         }
 
-        private HashSet<SearchResult> EvaluateQuery(Dictionary<int, QueryTreeNode> inputNodes, QueryTreeNode specificNode)
-        {
-            if (specificNode.Type == NodeType.LITERAL)
-            {
-                return m_db.Query(specificNode.Value);
-            }
-
-            var operatorName = specificNode.Value.ToUpperInvariant().Trim();
-            var left = EvaluateQuery(inputNodes, inputNodes[specificNode.LeftPart]);
-            var right = EvaluateQuery(inputNodes, inputNodes[specificNode.RightPart]);
-            if (operatorName == "AND")
-            {
-                left.IntersectWith(right);
-            }
-            else if (operatorName == "OR")
-            {
-                left.UnionWith(right);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-            return left;
-        }
-
         public QueryResponse query(Query query)
         {
             //Console.WriteLine("{0} documents in db", m_db.Count);
@@ -70,8 +45,8 @@ namespace BlitzIndex
 
             var responseBuilder = new QueryResponseBuilder();
 
-            var results = EvaluateQuery(treeNodes, treeNodes[query.RootId]);
-            foreach (SearchResult document in results)
+            var results = QueryEvaluator.EvaluateQuery(m_db, query);
+            foreach (IDocument document in results)
             {
                 //Console.WriteLine(document.Id + ":");
                 //Console.WriteLine(document.Text);
