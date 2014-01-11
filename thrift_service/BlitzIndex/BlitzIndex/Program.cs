@@ -61,9 +61,9 @@ namespace BlitzIndex
         {
             //Console.WriteLine("{0} documents in db", m_db.Count);
             //PrettyPrint.PrintQuery(query);
-			foreach(Task t in m_task)
+			foreach(Task t in m_tasks)
 				t.Wait();
-			m_task.Clear();
+			m_tasks.Clear();
 
             QueryResponse response = new QueryResponse();
             response.Results = new List<QueryResult>();
