@@ -79,14 +79,21 @@ namespace com.coveo.blitz.thrift
         {
             if (specificNode.Type == NodeType.LITERAL)
             {
-				var words = TextTokenizer.Tokenize(specificNode.Value).Select(t => t.Value).ToArray();
-				if (words.Length == 0) return new HashSet<SearchResult>();
+                var searchString = specificNode.Value.Trim();
+                if (searchString == "*")
+                {
+                    return db.Query(searchString);
+                }
 
-				var results = db.Query(words[0]);
-				if (words.Length > 1)
-					results.RemoveWhere(result => !MatchesFullText(result, words));
+                var words = TextTokenizer.Tokenize(specificNode.Value).Select(t => t.Value).ToArray();
+                if (words.Length == 0)
+                    return new HashSet<SearchResult>();
 
-				return results;
+                var results = db.Query(words[0]);
+                if (words.Length > 1)
+                    results.RemoveWhere(result => !MatchesFullText(result, words));
+
+                return results;
             }
 
             var operatorName = specificNode.Value.ToUpperInvariant().Trim();
