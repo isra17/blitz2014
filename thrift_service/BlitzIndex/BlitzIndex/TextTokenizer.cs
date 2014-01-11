@@ -9,38 +9,55 @@ namespace com.coveo.blitz.thrift
 {
 	public static class TextTokenizer
 	{
-		private static readonly Regex tokenizeRegex = new Regex(
-			@"[\p{L}-_\d]+", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-
 		public static TextToken? GetNextToken(string text, int index)
 		{
 			if (text == null) return null;
-			var match = tokenizeRegex.Match(text, index);
-			if (!match.Success) return null;
-			return new TextToken(match.Index, match.Value.ToUpperInvariant());
+
+			int wordStartIndex = -1;
+			bool hasLetterOrDigit = false;
+			while (true)
+			{
+				if (index == text.Length) break;
+
+				char c = text[index];
+				if (char.IsLetterOrDigit(c))
+				{
+					if (wordStartIndex == -1) wordStartIndex = index;
+					hasLetterOrDigit = true;
+				}
+				else if (c == '-' || c == '_')
+				{
+					if (wordStartIndex == -1) wordStartIndex = index;
+				}
+				else
+				{
+					if (wordStartIndex >= 0)
+					{
+						if (hasLetterOrDigit) break;
+						hasLetterOrDigit = false;
+						wordStartIndex = -1;
+					}
+				}
+
+				index++;
+			}
+
+			if (wordStartIndex == -1 || !hasLetterOrDigit) return null;
+
+			string tokenText = text.Substring(wordStartIndex, index - wordStartIndex).ToUpperInvariant();
+			return new TextToken(wordStartIndex, tokenText);
 		}
 
 		public static IEnumerable<TextToken> Tokenize(string text)
 		{
-			if (text == null) yield break;
-
-			Match match = tokenizeRegex.Match(text);
-			while (match.Success)
+			int index = 0;
+			while (true)
 			{
-				// Check that it's not just dashes or underscores
-				bool valid = false;
-				foreach (var c in match.Value)
-				{
-					if (c != '-' && c != '_')
-					{
-						valid = true;
-						break;
-					}
-				}
+				var token = GetNextToken(text, index);
+				if (!token.HasValue) break;
 
-				if (valid) yield return new TextToken(match.Index, match.Value.ToUpperInvariant());
-
-				match = match.NextMatch();
+				yield return token.Value;
+				index = token.Value.EndIndex;
 			}
 		}
 	}
