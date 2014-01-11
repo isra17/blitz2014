@@ -11,7 +11,7 @@ namespace BlitzIndex
 		private static readonly Func<string, HashSet<SearchResult>> searchResultFactory
 			= str => new HashSet<SearchResult>();
         private ConcurrentDictionary<string, HashSet<SearchResult>> m_key_entries = new ConcurrentDictionary<string, HashSet<SearchResult>>(StringComparer.Ordinal);
-        private Dictionary<string, SearchResult> m_entries = new Dictionary<string, SearchResult>(StringComparer.Ordinal);
+        private Dictionary<string, SearchResult> m_entries = new Dictionary<string, SearchResult>(250000, StringComparer.Ordinal);
 		
 		public Database()
 		{
