@@ -10,7 +10,7 @@ namespace BlitzIndex
 {
     class IndexerHandler : Indexer.Iface
     {
-		Database m_db;
+		Database m_db = new Database();
 
         public void indexArtist(Artist artistToIndex)
         {
