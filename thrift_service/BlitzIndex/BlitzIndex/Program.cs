@@ -24,7 +24,7 @@ namespace BlitzIndex
 
         public void indexDocument(IDocument document)
         {
-            m_db.Insert(document);
+            //m_db.Insert(document);
         }
 
         private HashSet<IDocument> EvaluateQuery(Dictionary<int, QueryTreeNode> inputNodes, QueryTreeNode specificNode)
