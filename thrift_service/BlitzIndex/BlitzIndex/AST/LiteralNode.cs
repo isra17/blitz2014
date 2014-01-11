@@ -37,8 +37,8 @@ namespace com.coveo.blitz.thrift.AST
 			for (int wordIndex = 1; wordIndex < words.Length; ++wordIndex)
 			{
 				var token = TextTokenizer.GetNextToken(result.Document.Text, nextTokenStartIndex);
-				if (!token.HasValue || token.Value.Value != words[wordIndex])
-					return false;
+				if (!token.HasValue || token.Value.Value != words[wordIndex]) return false;
+				nextTokenStartIndex = token.Value.EndIndex;
 			}
 
 			return true;
