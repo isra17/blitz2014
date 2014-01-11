@@ -46,6 +46,7 @@
     <Compile Include="Album.cs" />
     <Compile Include="Album2.cs" />
     <Compile Include="Artist.cs" />
+    <Compile Include="Artist2.cs" />
     <Compile Include="DocumentType.cs" />
     <Compile Include="FacetFilter.cs" />
     <Compile Include="FacetResult.cs" />
