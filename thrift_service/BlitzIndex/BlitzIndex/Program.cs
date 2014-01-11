@@ -32,12 +32,40 @@ namespace BlitzIndex
             QueryResponse response = new QueryResponse();
             Dictionary<int, QueryTreeNode> treeNodes = query.QueryTreeNodes.ToDictionary(n => n.Id);
             QueryTreeNode treeNode = treeNodes[query.RootId];
+
+			var facetResults = new Dictionary<string, FacetResult>();
+
             foreach (IDocument document in m_db.Query(treeNode.Value))
             {
                 QueryResult result = new QueryResult();
                 result.DocumentType = document.Type;
                 result.Id = document.Id;
                 response.Results.Add(result);
+				
+				foreach (var facetName in document.FacetNames)
+				{
+					FacetResult facetResult;
+					if (!facetResults.TryGetValue(facetName, out facetResult))
+					{
+						facetResult = new FacetResult();
+						facetResult.MetadataName = facetName;
+						facetResults.Add(facetName, facetResult);
+					}
+
+					foreach (string value in document.GetFacetValues(facetName))
+					{
+						var facetValue = facetResult.Values.FirstOrDefault(v => v.Value == value);
+						if (facetValue == null)
+						{
+							facetValue = new FacetValue();
+							facetValue.Value = value;
+							facetValue.Count = 0;
+							facetResult.Values.Add(facetValue);
+						}
+
+						facetValue.Count++;
+					}
+				}
             }
             return response;
         }
