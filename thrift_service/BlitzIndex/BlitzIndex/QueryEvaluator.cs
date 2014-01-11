@@ -56,10 +56,10 @@ namespace com.coveo.blitz.thrift
 			var results = new List<ScoredResult>();
 			var scores = new Dictionary<IDocument, ScoredResult>();
 			foreach (var document in FindDocuments(db, RootNode))
-			{
-				double tf = Math.Log10(document.Occurrences.Count + 1);
-				double idf = Math.Log10(db.Count / (db.CountDocumentsWithTerm(document.Term) + 1));
-				double product = tf * idf;
+            {
+                double tf = Math.Log10(result.Occurrences.Count + 1);
+                double idf = Math.Log10((double)db.Count / (double)(db.CountDocumentsWithTerm(result.Term) + 1));
+                double product = tf * idf;
 
 				ScoredResult result;
 				if (scores.TryGetValue(document.Document, out result))
