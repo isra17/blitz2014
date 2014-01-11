@@ -28,7 +28,16 @@ namespace BlitzIndex
 
         public QueryResponse query(Query query)
         {
-            Console.WriteLine("Query " + query.RootId);
+            QueryTreeNode treeNode = query.QueryTreeNodes[query.RootId];
+            if (treeNode.Value == "*")
+            {
+                // dump everything
+            }
+            else
+            {
+                // identical match for a SINGLE keyword
+                string identicalMatch = treeNode.Value;
+            }
             return new QueryResponse();
         }
 
