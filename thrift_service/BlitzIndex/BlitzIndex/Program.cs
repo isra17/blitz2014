@@ -56,19 +56,23 @@ namespace BlitzIndex
 						response.Facets.Add(facetResult);
 					}
 
-					foreach (string value in document.GetFacetValues(facetName))
-					{
-						var facetValue = facetResult.Values.FirstOrDefault(v => v.Value == value);
-						if (facetValue == null)
-						{
-							facetValue = new FacetValue();
-							facetValue.Value = value;
-							facetValue.Count = 0;
-							facetResult.Values.Add(facetValue);
-						}
+                    var values = document.GetFacetValues(facetName);
+                    if (values != null)
+                    {
+                        foreach (string value in values)
+                        {
+                            var facetValue = facetResult.Values.FirstOrDefault(v => v.Value == value);
+                            if (facetValue == null)
+                            {
+                                facetValue = new FacetValue();
+                                facetValue.Value = value;
+                                facetValue.Count = 0;
+                                facetResult.Values.Add(facetValue);
+                            }
 
-						facetValue.Count++;
-					}
+                            facetValue.Count++;
+                        }
+                    }
 				}
             }
             return response;
