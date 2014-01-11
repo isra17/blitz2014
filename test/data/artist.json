@@ -1,0 +1,13 @@
+[{
+    "id": "1",
+    "name": ["1a"],
+    "origin": ["1b"],
+    "active_start": ["1c"],
+    "active_end": ["1d"],
+    "genres": ["1e"],
+    "labels": ["1f"],
+    "albums": ["1g"],
+    "group_names": ["1h"],
+    "instruments_played": ["1i"],
+    "text": "1j"
+}]
