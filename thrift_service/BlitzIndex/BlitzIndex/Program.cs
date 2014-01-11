@@ -31,8 +31,15 @@ namespace BlitzIndex
         {
 			Task t = Task.Factory.StartNew(() => 
 				{
-					document.FullText();
-					m_db.Insert(document);
+					try
+					{
+						document.FullText();
+						m_db.Insert(document);
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine("{0}:\n:{1}", e.ToString(), e.StackTrace);
+					}
 				});
 			m_tasks.Add(t);
         }
