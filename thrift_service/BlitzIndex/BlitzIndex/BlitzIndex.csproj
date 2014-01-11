@@ -62,6 +62,7 @@
     <Compile Include="QueryResult.cs" />
     <Compile Include="QueryTreeNode.cs" />
     <Compile Include="indexer\Database.cs" />
+    <Compile Include="QueryResponseBuilder.cs" />
     <Compile Include="TextTokenizer.cs" />
   </ItemGroup>
   <ItemGroup>

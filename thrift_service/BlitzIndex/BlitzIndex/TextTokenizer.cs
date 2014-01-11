@@ -29,7 +29,7 @@ namespace com.coveo.blitz.thrift
 					}
 				}
 
-				if (valid) yield return match.Value;
+				if (valid) yield return match.Value.ToLowerInvariant();
 
 				match = match.NextMatch();
 			}

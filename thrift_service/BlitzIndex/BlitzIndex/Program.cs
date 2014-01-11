@@ -54,12 +54,15 @@ namespace BlitzIndex
 
         public QueryResponse query(Query query)
         {
+            //Console.WriteLine("{0} documents in db", m_db.Count);
+            //PrettyPrint.PrintQuery(query);
+
             QueryResponse response = new QueryResponse();
             response.Results = new List<QueryResult>();
             response.Facets = new List<FacetResult>();
             Dictionary<int, QueryTreeNode> treeNodes = query.QueryTreeNodes.ToDictionary(n => n.Id);
 
-            var facetResults = new Dictionary<string, FacetResult>();
+            var responseBuilder = new QueryResponseBuilder();
 
             foreach (IDocument document in EvaluateQuery(treeNodes, treeNodes[query.RootId]))
             {
@@ -67,45 +70,10 @@ namespace BlitzIndex
                 //Console.WriteLine(document.Text);
                 //Console.WriteLine();
 
-                QueryResult result = new QueryResult();
-                result.DocumentType = document.Type;
-                result.Id = document.Id;
-                response.Results.Add(result);
-                
-                foreach (var facetName in document.FacetNames)
-                {
-                    FacetResult facetResult;
-                    if (!facetResults.TryGetValue(facetName, out facetResult))
-                    {
-                        facetResult = new FacetResult();
-                        facetResult.Values = new List<FacetValue>();
-                        facetResult.MetadataName = facetName;
-                        facetResults.Add(facetName, facetResult);
-                        response.Facets.Add(facetResult);
-                    }
-
-                    var values = document.GetFacetValues(facetName);
-                    if (values != null)
-                    {
-                        foreach (string value in values)
-                        {
-                            var facetValue = facetResult.Values.FirstOrDefault(v => v.Value == value);
-                            if (facetValue == null)
-                            {
-                                facetValue = new FacetValue();
-                                facetValue.Value = value;
-                                facetValue.Count = 0;
-                                facetResult.Values.Add(facetValue);
-                            }
-
-                            facetValue.Count++;
-                        }
-                    }
-                }
+                responseBuilder.AddNewDocument(document);
             }
 
-            response.Results.Sort((a, b) => string.Compare(a.Id, b.Id));
-            return response;
+            return responseBuilder.Build();
         }
 
         public void reset()

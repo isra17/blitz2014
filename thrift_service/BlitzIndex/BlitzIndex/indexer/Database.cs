@@ -6,12 +6,18 @@ namespace BlitzIndex
 {
 	public class Database
 	{
-		Dictionary<string, HashSet<IDocument>> m_key_entries = new Dictionary<string, HashSet<IDocument>>(StringComparer.InvariantCultureIgnoreCase);
-		Dictionary<string, IDocument> m_entries = new Dictionary<string, IDocument>();
+		Dictionary<string, HashSet<IDocument>> m_key_entries = new Dictionary<string, HashSet<IDocument>>(StringComparer.Ordinal);
+		Dictionary<string, IDocument> m_entries = new Dictionary<string, IDocument>(StringComparer.Ordinal);
 		
 		public Database ()
 		{
 			
+		}
+
+
+		public int Count
+		{
+			get { return m_entries.Count; }
 		}
 		
 		public void Insert(IDocument entry)
@@ -54,7 +60,7 @@ namespace BlitzIndex
 		public IDocument GetDocument(string id)
 		{
 			return m_entries[id];
-		}
+	}
 	}
 }
 
