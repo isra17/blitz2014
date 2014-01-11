@@ -16,6 +16,8 @@ namespace BlitzIndex
 		
 		public void Insert(IDocument entry)
 		{
+			m_entries.Add(entry.Id, entry);
+
 			foreach(string keyword in entry.Keywords)
 			{
 				HashSet<IDocument> documents;
@@ -25,7 +27,6 @@ namespace BlitzIndex
 					m_key_entries.Add(keyword, documents);
 				}
 				documents.Add(entry);
-				m_entries.Add(entry.Id, entry);
 			}
 		}
 		
