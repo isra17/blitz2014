@@ -10,20 +10,19 @@ namespace BlitzIndex
 {
     class IndexerHandler : Indexer.Iface
     {
-
         public void indexArtist(Artist artistToIndex)
         {
-            Console.WriteLine("Artist " + artistToIndex.Id);
+			indexDocument(artistToIndex);
         }
 
         public void indexAlbum(Album albumToIndex)
-        {
-            Console.WriteLine("Album " + albumToIndex.Id);
+		{
+			indexDocument(albumToIndex);
         }
 
 		public void indexDocument(IDocument document)
 		{
-
+			Console.WriteLine("{0} {1}", document.Type, document.Id);
 		}
 
         public QueryResponse query(Query query)
