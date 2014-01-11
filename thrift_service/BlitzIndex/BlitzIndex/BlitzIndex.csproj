@@ -8,7 +8,7 @@
     <ProjectGuid>{B0760DD2-88A3-430B-BDC2-E86A04487012}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BlitzIndex</RootNamespace>
+    <RootNamespace>com.coveo.blitz.thrift</RootNamespace>
     <AssemblyName>BlitzIndex</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Album.cs" />
+    <Compile Include="Album2.cs" />
     <Compile Include="Artist.cs" />
     <Compile Include="DocumentType.cs" />
     <Compile Include="FacetFilter.cs" />

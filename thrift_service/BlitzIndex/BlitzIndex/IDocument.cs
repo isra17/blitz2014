@@ -1,11 +1,10 @@
-﻿using com.coveo.blitz.thrift;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Thrift.Collections;
 
-namespace BlitzIndex
+namespace com.coveo.blitz.thrift
 {
 	public interface IDocument
 	{
