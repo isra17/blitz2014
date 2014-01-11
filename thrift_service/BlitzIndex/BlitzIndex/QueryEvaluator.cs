@@ -8,6 +8,13 @@ namespace com.coveo.blitz.thrift
 {
     class QueryEvaluator
     {
+		private sealed class ScoredResult
+		{
+			public IDocument Document;
+			public double Score;
+		}
+
+		private readonly Query query;
         private Dictionary<int, QueryTreeNode> treeNodes;
         private int rootId;
 
@@ -18,6 +25,7 @@ namespace com.coveo.blitz.thrift
 
         public QueryEvaluator(Query query)
         {
+			this.query = query;
             treeNodes = query.QueryTreeNodes.ToDictionary(n => n.Id);
             rootId = query.RootId;
         }
@@ -30,28 +38,45 @@ namespace com.coveo.blitz.thrift
         public IEnumerable<IDocument> Evaluate(Database db)
         {
             // tri par pertinence
-            Dictionary<IDocument, double> scores = new Dictionary<IDocument, double>();
+			var results = new List<ScoredResult>();
+			var scores = new Dictionary<IDocument, ScoredResult>();
 
-            foreach (var result in FindDocuments(db, RootNode))
+            foreach (var document in FindDocuments(db, RootNode))
             {
-                double tf = Math.Log10(result.Occurrences.Count + 1);
-                double idf = Math.Log10(db.Count / (db.CountDocumentsWithTerm(result.Term) + 1));
+                double tf = Math.Log10(document.Occurrences.Count + 1);
+                double idf = Math.Log10(db.Count / (db.CountDocumentsWithTerm(document.Term) + 1));
                 double product = tf * idf;
-                if (scores.ContainsKey(result.Document))
+
+				ScoredResult result;
+				if (scores.TryGetValue(document.Document, out result))
                 {
-                    scores[result.Document] += product;
+					result.Score += product;
                 }
                 else
                 {
-                    scores[result.Document] = product;
+					result = new ScoredResult
+					{
+						Document = document.Document,
+						Score = result.Score
+					};
+					results.Add(result);
+					scores.Add(document.Document, result);
                 }
             }
 
-            return scores
-                .OrderByDescending(pair => pair.Value)
-                .ThenBy(pair => pair.Key.Id, StringComparer.InvariantCultureIgnoreCase)
-                .Select(pair => pair.Key);
+			results.Sort((a, b) =>
+				{
+					int comparison = a.Score.CompareTo(b.Score);
+					if (comparison == 0) comparison = string.Compare(a.Document.Id, b.Document.Id);
+					return comparison;
+				});
+			return results.Select(result => result.Document);
         }
+
+		private void Filter(IEnumerable<IDocument> document)
+		{
+			
+		}
 
 		private bool MatchesFullText(SearchResult result, string[] words, int occurenceIndex)
 		{
