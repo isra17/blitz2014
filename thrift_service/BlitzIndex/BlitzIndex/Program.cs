@@ -26,12 +26,22 @@ namespace BlitzIndex
 
 		public void indexDocument(IDocument document)
 		{
+			Console.WriteLine("{0} {1}", document.Type, document.Id);
 			m_db.Insert(document);
 		}
 
         public QueryResponse query(Query query)
         {
-            Console.WriteLine("Query " + query.RootId);
+            QueryTreeNode treeNode = query.QueryTreeNodes[query.RootId];
+            if (treeNode.Value == "*")
+            {
+                // dump everything
+            }
+            else
+            {
+                // identical match for a SINGLE keyword
+                string identicalMatch = treeNode.Value;
+            }
             return new QueryResponse();
         }
 
