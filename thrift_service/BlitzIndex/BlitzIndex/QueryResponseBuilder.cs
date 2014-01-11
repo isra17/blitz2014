@@ -46,9 +46,8 @@ namespace BlitzIndex
 			response.Facets = new List<FacetResult>();
 		}
 
-		public void AddNewDocument(SearchResult searchResult)
+		public void AddNewDocument(IDocument document)
 		{
-            var document = searchResult.Document;
 			response.Results.Add(new QueryResult
 			{
                 DocumentType = document.Type,

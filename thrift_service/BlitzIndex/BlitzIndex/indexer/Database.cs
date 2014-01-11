@@ -27,7 +27,7 @@ namespace BlitzIndex
 		{
             lock (m_entries)
             {
-                m_entries.Add(entry.Id, new SearchResult(entry, emptyIntList));
+                m_entries.Add(entry.Id, new SearchResult(string.Empty, entry, emptyIntList));
             }
 
             Dictionary<string, List<int>> keywordOccurences = new Dictionary<string, List<int>>();
@@ -47,11 +47,20 @@ namespace BlitzIndex
 				HashSet<SearchResult> keywordSet = m_key_entries.GetOrAdd(pair.Key, searchResultFactory);
                 lock (keywordSet)
                 {
-                    keywordSet.Add(new SearchResult(entry, pair.Value));
+                    keywordSet.Add(new SearchResult(pair.Key, entry, pair.Value));
                 }
 			}
 		}
 		
+        public int CountDocumentsWithTerm(string term)
+        {
+            HashSet<SearchResult> results;
+            if (!m_key_entries.TryGetValue(term, out results))
+                return 0;
+
+            return results.Count;
+        }
+
 		public HashSet<SearchResult> Query(string keyword)
 		{
 			keyword = keyword.ToUpperInvariant().Trim();
