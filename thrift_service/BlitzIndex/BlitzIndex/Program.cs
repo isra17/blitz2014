@@ -106,7 +106,7 @@ namespace BlitzIndex
             Indexer.Processor processor = new Indexer.Processor(handler);
 
             TServerTransport serverTransport = new TServerSocket(9090);
-            TServer server = new TThreadPoolServer(processor, serverTransport);
+            TServer server = new TThreadedServer(processor, serverTransport);
             Console.WriteLine("Server started!");
             server.Serve();
         }
