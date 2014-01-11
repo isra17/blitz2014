@@ -10,20 +10,23 @@ namespace BlitzIndex
 {
     class IndexerHandler : Indexer.Iface
     {
+		Database m_db;
 
         public void indexArtist(Artist artistToIndex)
         {
             Console.WriteLine("Artist " + artistToIndex.Id);
+			indexDocument(artistToIndex);
         }
 
         public void indexAlbum(Album albumToIndex)
         {
             Console.WriteLine("Album " + albumToIndex.Id);
+			indexDocument(albumToIndex);
         }
 
 		public void indexDocument(IDocument document)
 		{
-
+			m_db.Insert(document);
 		}
 
         public QueryResponse query(Query query)
@@ -35,6 +38,7 @@ namespace BlitzIndex
         public void reset()
         {
             Console.WriteLine("Reset");
+			m_db.Reset();
         }
 
         public void ping()

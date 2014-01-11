@@ -40,7 +40,13 @@ namespace BlitzIndex
 				return set;
 			}
 			return new HashSet<IDocument>();
-		}			
+		}	
+		
+		public void Reset() 
+		{
+			m_entries.Clear();
+			m_key_entries.Clear();
+		}
 	}
 }
 
