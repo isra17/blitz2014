@@ -32,6 +32,7 @@ namespace BlitzIndex
 				{
 					facetValue = new FacetValue();
 					facetValue.Value = value;
+					facetValue.Count = 1;
 					values.Add(value, facetValue);
 					Result.Values.Add(facetValue);
 				}
