@@ -27,17 +27,41 @@ namespace BlitzIndex
             m_db.Insert(document);
         }
 
+        private HashSet<IDocument> EvaluateQuery(Dictionary<int, QueryTreeNode> inputNodes, QueryTreeNode specificNode)
+        {
+            if (specificNode.Type == NodeType.LITERAL)
+            {
+                return m_db.Query(specificNode.Value);
+            }
+
+            var operatorName = specificNode.Value.ToUpperInvariant();
+            var left = EvaluateQuery(inputNodes, inputNodes[specificNode.LeftPart]);
+            var right = EvaluateQuery(inputNodes, inputNodes[specificNode.RightPart]);
+            if (operatorName == "AND")
+            {
+                left.IntersectWith(right);
+            }
+            else if (operatorName == "OR")
+            {
+                left.UnionWith(right);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+            return left;
+        }
+
         public QueryResponse query(Query query)
         {
             QueryResponse response = new QueryResponse();
 			response.Results = new List<QueryResult>();
 			response.Facets = new List<FacetResult>();
             Dictionary<int, QueryTreeNode> treeNodes = query.QueryTreeNodes.ToDictionary(n => n.Id);
-            QueryTreeNode treeNode = treeNodes[query.RootId];
 
 			var facetResults = new Dictionary<string, FacetResult>();
 
-            foreach (IDocument document in m_db.Query(treeNode.Value))
+            foreach (IDocument document in EvaluateQuery(treeNodes, treeNodes[query.RootId]))
             {
                 QueryResult result = new QueryResult();
                 result.DocumentType = document.Type;
